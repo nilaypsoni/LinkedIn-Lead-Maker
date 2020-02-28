@@ -39,6 +39,12 @@
         <div class="message text-center"> <br>
           <i class="fa fa-check fa-5x text-success"></i>
           <p id="leads_saved_text"></p>
+          <br>
+          <br>
+          <br>
+          <button class="btn btn-info btn-blue" id="back-btn">
+            <i class="fa fa-arrow-left"></i> <span id="back-btn-text"> </span>
+          </button>
         </div>
       </div>
       <div class="row" id="error">
@@ -80,8 +86,12 @@
             <div class="">
               <p class="name"></p>
               <p class="title"></p>
-              <p class="company"></p>
-              <p class="location"></p>
+              <p>
+                <i class="fa fa-map-marker"></i> <span class="location-txt"> </span>
+              </p>
+              <p>
+                <i class="fa fa-building"></i> <span class="company-txt"> </span>
+              </p>
             </div>
             <div class="email-info">
               <p class="email-found text-success"> </p>
@@ -117,7 +127,26 @@
 
       </div>
 
-      <br><br><br><br>
+      <div class="row" id="add_all_profile_list_seaction">
+        <div class="col-xs-8">
+          <label>Add to List : </label>
+          <button class="btn btn-default" id="my-contact-list-btn">
+            <span id="my-contact-list-text"> </span> <i class="fa fa-caret-down"></i>
+          </button>
+        </div>
+        <div class="col-xs-4">
+          <button class="btn btn-info btn-block btn-blue" id="add-all-lead-btn">
+            <i class="fa fa-user-plus"></i> <span id="add-all-lead-text"> </span>
+          </button>
+        </div>
+
+        <div class="col-xs-12">
+          <br>
+          <div id="profiles-list">
+          </div>
+        </div>
+
+      </div>
 
     </div>
   </div>

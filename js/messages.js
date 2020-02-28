@@ -9,9 +9,11 @@ var messagesObj = (function(){
       no: 'No',
       next: 'Next',
       add_Lead: 'Add',
+      add_all_lead: 'Add All',
+      my_contact_list_text : "My Contacts",
       get_email: 'Get Email',
       go_to_list: 'Go To List',
-
+      back_btn_text : 'Back',
       close : 'Close',
       not_loggedin: 'Not logged in.',
 
@@ -19,6 +21,9 @@ var messagesObj = (function(){
       searching_prospect : 'Searching for Prospect...',
       profile_unvailable: 'Profile data unavailable ✘',
       email_found: 'Email found ✓',
+      saved_text: 'Saved ✓',      
+      error_text: 'Error ✘',
+      saving_text: 'Saving...',      
       email_not_found: 'Email not found ✘',
       list_not_found: 'List not found ✘',
       extraction_failed: 'An unexpected error has occurred. Please try again later.',

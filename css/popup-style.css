@@ -14,11 +14,11 @@ body {
 
 .popup-header > h3 {	
 	font-size: 17px;
-    font-weight: 700;
-    color: #ffffff;
-    margin: 0px;
-    padding: 4px 10px 10px;
-    text-align: left;
+	font-weight: 700;
+	color: #ffffff;
+	margin: 0px;
+	padding: 4px 10px 10px;
+	text-align: left;
 }
 .btn-blue {
 	background: #03a9f5;
@@ -26,10 +26,15 @@ body {
 .btn-blue:hover {
 	background: #03a9f5;
 }
-.popup-body{
+.popup-body .row{
 	background: #ffffff;
-	box-shadow: 0px 0px 3px 1px #dfdfdf;
+	padding: 20px 0px 20px 0px;
+}
+.popup-body{
+	/*background: #ffffff;
+	box-shadow: 0px 0px 3px 1px #dfdfdf;*/
 	padding: 12px;	
+	max-height: 510px;
 }
 .popup-body .css-loader {
 	width: 100%;
@@ -37,7 +42,9 @@ body {
 	text-align: center;
 	margin: 30% 0;
 }
-
+.popup-body #add_all_profile_list_seaction{
+	background: #efefef;
+}
 
 .popup-body .css-loading-style {
 	font-size: 46px;
@@ -89,7 +96,7 @@ body {
 	padding: 0px 22px;
 }
 
-#profile_data .imgUrl{
+#profile_data .imgUrl,#profiles-list .imgUrl{
 	border-radius: 50%;
 	width: 50px;
 	height: 50px;
@@ -99,24 +106,26 @@ body {
 	box-shadow: 0px 0px 4px #404040;
 }
 
-#profile_data p.name {
+#profile_data p.name,#profiles-list p.name {
 	font-weight: bold;
 	font-size: 16px;
 }
-#profile_data .email-info a {
+#profile_data .email-info a ,#profiles-list .email-info a {
 	text-align: left;    
 	font-size: 14px;
 	font-weight: bold;
 }
-#profile_data .email-info p{
+#profile_data .email-info p,#profiles-list .email-info p{
 	display: none;
 }
-#profile_data p {
+#profile_data p,#profiles-list p {
 	font-size: 12px;
 	line-height: 14px;
 	font-weight: 300;
 }
-
+#profiles-list .profile-item {
+	margin-bottom: 16px;
+}
 @keyframes flickerAnimation {
 	0%   { opacity:1; }
 	50%  { opacity:0; }
@@ -146,4 +155,44 @@ body {
 }
 ::-webkit-scrollbar-thumb {
 	background: #ccc
+}
+
+#profiles-list {
+	padding-left: 0px;    
+	/*max-height: 480px;
+	overflow-x: auto;*/
+}
+/*#profiles-list li {
+	list-style: none;
+	padding: 5px;
+	border-bottom: 1px solid #cccccc;
+	line-height: 20px;
+}
+#profiles-list li .profiles-img {
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+	background: #c5c5c5;
+	margin-top: 2px;	
+	box-shadow: 0px 0px 4px #404040;
+}
+#profiles-list li .profiles-name {
+	margin-left: 5px;
+}
+#profiles-list li .profiles-status{
+	display: inline-block;
+	max-width: 100%;
+	margin-top: 5px;
+	margin-right: 13px;
+	font-weight: bold;
+}*/
+
+#profiles-list .profiles-status{
+	display: inline-block;
+	max-width: 100%;
+	margin-top: 5px;
+	margin-right: 13px;
+	font-weight: bold;
+	margin: 9px 0px 13px 24px;
+	font-size: 15px;
 }

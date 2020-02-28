@@ -74,16 +74,20 @@ var myApp = {
       getProfileUserDetailsFromAPI(p_id).then((profileViewObj) => {
         connectionObj['user_details'] = profileViewObj;
         connectionObj['user_details']['contact_info'] = contact_info_res;
-        var public_identifier = profileViewObj.profile.miniProfile.publicIdentifier;          
-        var objectUrn = profileViewObj.profile.miniProfile.objectUrn;
-        var li_member = objectUrn.replace("urn:li:member:","");
-        var user_id = li_member + '|' + public_identifier;        
-        console.log('getUserFromServer... >> ', connectionObj);
-        console.log('profile user_id  >> ', user_id);
-        getUserFromServer(user_id,connectionObj).then((getUserFromServer_res) => {
-          console.log('getUserFromServer response >> ', getUserFromServer_res);
-          sendResponse(getUserFromServer_res);
-        });
+        if (profileViewObj && profileViewObj.profile && profileViewObj.profile.miniProfile && profileViewObj.profile.miniProfile.publicIdentifier) {
+          var public_identifier = profileViewObj.profile.miniProfile.publicIdentifier;
+          var objectUrn = profileViewObj.profile.miniProfile.objectUrn;
+          var li_member = objectUrn.replace("urn:li:member:","");
+          var user_id = li_member + '|' + public_identifier;        
+          console.log('getUserFromServer... >> ', connectionObj);
+          console.log('profile user_id  >> ', user_id);
+          getUserFromServer(user_id,connectionObj).then((getUserFromServer_res) => {
+            console.log('getUserFromServer response >> ', getUserFromServer_res);
+            sendResponse(getUserFromServer_res);
+          });          
+        } else {
+          resolve("");
+        }
       });
     });
   },
@@ -93,17 +97,21 @@ var myApp = {
       getProfileUserDetailsFromAPI(p_id).then((profileViewObj) => {
         connectionObj['user_details'] = profileViewObj;
         connectionObj['user_details']['contact_info'] = contact_info_res;
-        var public_identifier = profileViewObj.profile.miniProfile.publicIdentifier;          
-        var objectUrn = profileViewObj.profile.miniProfile.objectUrn;
-        var li_member = objectUrn.replace("urn:li:member:","");
-        var user_id = li_member + '|' + public_identifier;        
-        console.log('addLeadToBuffer >> ', connectionObj);
-        console.log('profile user_id  >> ', user_id);
-        var saved_leads_obj = uiSettings.saved_leads_obj || {};
-        saved_leads_obj[user_id] = connectionObj;        
-        uiSettings.saved_leads_obj = saved_leads_obj;
-        myApp.saveUISettings();
-        sendResponse({ saved : true });
+        if (profileViewObj && profileViewObj.profile && profileViewObj.profile.miniProfile && profileViewObj.profile.miniProfile.publicIdentifier) {
+          var public_identifier = profileViewObj.profile.miniProfile.publicIdentifier;
+          var objectUrn = profileViewObj.profile.miniProfile.objectUrn;
+          var li_member = objectUrn.replace("urn:li:member:","");
+          var user_id = li_member + '|' + public_identifier;        
+          console.log('addLeadToBuffer >> ', connectionObj);
+          console.log('profile user_id  >> ', user_id);
+          var saved_leads_obj = uiSettings.saved_leads_obj || {};
+          saved_leads_obj[user_id] = connectionObj;        
+          uiSettings.saved_leads_obj = saved_leads_obj;
+          myApp.saveUISettings();
+          sendResponse({ saved : true });
+        } else {
+          sendResponse({ saved : false });
+        }
       });
     });
   },
@@ -465,15 +473,17 @@ function getLinkedinLoggedinUserInfo() {
         var linkedin_loggedin_user_id = uiSettings['linkedin_loggedin_user_id'] || "";
         if (linkedin_loggedin_public_identifier == "" || linkedin_loggedin_user_id == "") {
           getProfileUserDetailsFromAPI('me').then((profileViewObj) => {
-            var public_identifier = profileViewObj.profile.miniProfile.publicIdentifier;          
-            var objectUrn = profileViewObj.profile.miniProfile.objectUrn;
-            var li_member = objectUrn.replace("urn:li:member:","");
-            obj.public_identifier = public_identifier;
-            obj.user_id = li_member;
-            uiSettings['linkedin_loggedin_public_identifier'] = obj.public_identifier;
-            uiSettings['linkedin_loggedin_user_id'] = obj.user_id;
-            myApp.saveUISettings();
-            resolve(obj);
+            if (profileViewObj && profileViewObj.profile && profileViewObj.profile.miniProfile && profileViewObj.profile.miniProfile.publicIdentifier) {
+              var public_identifier = profileViewObj.profile.miniProfile.publicIdentifier;          
+              var objectUrn = profileViewObj.profile.miniProfile.objectUrn;
+              var li_member = objectUrn.replace("urn:li:member:","");
+              obj.public_identifier = public_identifier;
+              obj.user_id = li_member;
+              uiSettings['linkedin_loggedin_public_identifier'] = obj.public_identifier;
+              uiSettings['linkedin_loggedin_user_id'] = obj.user_id;
+              myApp.saveUISettings();
+              resolve(obj);
+            }
           });
         } else {
           var obj = { 

@@ -11,6 +11,7 @@ window.addEventListener("load",function() {
 var myAppPopup = {
 	uiSettings:{},
   profile_data_arr:[],
+  search_profiles_arr:[],
   current: {
     active: false,
     name: '',    
@@ -35,6 +36,10 @@ var myAppPopup = {
             myAppPopup.getSingleProfileInfo("","LN");
           } else if(currentURL.indexOf('sales/people/') > -1 ){
             myAppPopup.getSingleProfileInfo("","SN");
+          } else if(currentURL.indexOf('search/results/people') > -1 ){
+            myAppPopup.getSearchProfileInfo("","LN");
+          } else if(currentURL.indexOf('sales/search/people') > -1 ){
+            myAppPopup.getSearchProfileInfo("","SN");
           } else {
             myAppPopup.renderPopup('use_button');
           }            
@@ -45,30 +50,6 @@ var myAppPopup = {
         myAppPopup.renderPopup('error_usage');
       }
     });
-
-    // myAppPopup.checkLoginAuth(function(account){
-    //   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    //     if (tabs.length > 0) {
-    //       var currentURL = tabs[0].url;
-    //       if(currentURL.indexOf('linkedin') > -1) {
-    //         if(currentURL.indexOf('/in/') > -1 || currentURL.indexOf('/profile') > -1) {
-    //           myAppPopup.getSingleProfileInfo(account,"LN");
-    //         } else if(currentURL.indexOf('sales/people/') > -1 ){
-    //           myAppPopup.getSingleProfileInfo(account,"SN");
-    //         } else {
-    //           myAppPopup.renderPopup('use_button');
-    //         }            
-    //       } else {
-    //         myAppPopup.renderPopup('error_usage');
-    //       }
-    //     } else {
-    //       myAppPopup.renderPopup('error_usage');
-    //     }
-    //   });
-
-    // });
-    //});
-
   },
   /* 
   * Function : addEvents() 
@@ -76,15 +57,52 @@ var myAppPopup = {
   */
   addEvents:function() {
 
+    $(document).on('click','button#back-btn',function (e) {
+      e.preventDefault();
+      if (myAppPopup.profile_data_arr.length > 0) {
+        myAppPopup.renderPopup('profile_data',myAppPopup.profile_data_arr[0],{});
+      } else {        
+        myAppPopup.renderPopup('add_all_profile_list_seaction',myAppPopup.search_profiles_arr);
+      }
+    });
+    
+
+    $(document).on('click','button#add-all-lead-btn',function (e) {
+      e.preventDefault();
+      $("#add-all-lead-btn").prop('disabled',true);
+      $(".profile-item").find('.add-single-lead-btn').prop('disabled',true);
+      var status = messagesObj.get('saving_text');
+      $(".profile-item").find('.profiles-status').addClass('text-warning').text(status);
+      myAppPopup.addAllLeadToBuffer();
+    });
+    
+    $(document).on('click','button.add-single-lead-btn',function (e) {
+      e.preventDefault();
+      $(this).prop('disabled',true);
+      var data_index = $(this).closest('.profile-item').attr('data-index');
+      var current_profile = myAppPopup.search_profiles_arr[data_index];
+      var status = messagesObj.get('saving_text');
+      $(".profile-item[data-index="+data_index+"]").find('.profiles-status').addClass('text-warning').text(status);
+      myAppPopup.saveSingleAddLeadToBuffer(current_profile,data_index).then((add_res_obj) => {
+        if (add_res_obj && add_res_obj.response && add_res_obj.response.saved == true) {
+          $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').removeClass('text-warning');
+          $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').addClass('text-success');
+          $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').text(messagesObj.get('saved_text'));
+        } else {
+          $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').removeClass('text-warning');
+          $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').addClass('text-danger');
+          $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').text(messagesObj.get('error_text'));
+        }
+      });
+    });
+
     $(document).on('click','button#add-Lead-btn',function (e) {
       e.preventDefault();
       myAppPopup.renderPopup('loader');
       myAppPopup.addLeadToBuffer().then((addLeadToBuffer_res) => {
         console.log('addLeadToBuffer response >> ', addLeadToBuffer_res);
         if (addLeadToBuffer_res && addLeadToBuffer_res.saved == true) {
-          myAppPopup.renderPopup('lead_saved', {
-            email  : "",
-          });          
+          myAppPopup.renderPopup('lead_saved', 1);
         } else {
           myAppPopup.renderPopup('error');  
         }
@@ -153,17 +171,19 @@ var myAppPopup = {
 initLangMessages : function(){
 
   $('#extraction_failed').text(messagesObj.get('extraction_failed')); 
-  $('#leads_saved_text').html(messagesObj.get('leads_saved')+'<a class="list_url" href="'+consts.list_url+'" target="_blank"><span class="listName"></span></a>');
+  $('#leads_saved_text').html(messagesObj.get('leads_saved'));
   $('.linkedin_info').text(messagesObj.get('linkedin_info'));
   $('.email-not-found span').text(messagesObj.get('email_not_found'));
   $('.email-found span').text(messagesObj.get('email_found'));
   $('.list-not-found span').text(messagesObj.get('list_not_found'));
   //$('#saveLead').text(messagesObj.get('save'));
   $('#add-Lead-text').text(messagesObj.get('add_Lead'));
+  $('#add-all-lead-text').text(messagesObj.get('add_all_lead'));
+  $('#my-contact-list-text').text(messagesObj.get('my_contact_list_text'));  
   $('#get-email-text').text(messagesObj.get('get_email'));
   $('#go-to-list-text').text(messagesObj.get('go_to_list'));
   $('.ext_info').html(messagesObj.get('ext_info')+' <b><a class="text-info" href="https://www.linkedin.com" target="_blank">Linkedin.com</  a></b>');  
-
+  $('#back-btn-text').text(messagesObj.get('back_btn_text'));
 },
 
 checkLoginAuth:function(proceed){ 
@@ -216,14 +236,37 @@ getSingleProfileInfo:function(account,search_type){
     myAppPopup.renderPopup('error');
   });
 },
+getSearchProfileInfo:function(account,search_type){
+  myAppPopup.renderPopup('loader');
+  //$("button#add-all-lead-btn").attr("search-type",search_type);
+  myAppPopup.getSearchProfileData(search_type).then((response) => {
+    console.log(response);
+    if (response && response.profiles_arr && response.profiles_arr.length > 0) {
+      myAppPopup.search_profiles_arr = response.profiles_arr;
+      myAppPopup.renderPopup('add_all_profile_list_seaction',response.profiles_arr);
+    } else {
+
+    }
+  }).catch( err => {
+    myAppPopup.renderPopup('error');
+  });    
+},
 getLeadEmail:function(){
-  return new Promise(function (resolve, reject) {
-    var LinkedinUrl, elog;
-    var leads = [];
+  return new Promise(function (resolve, reject) {    
     if (myAppPopup.profile_data_arr && myAppPopup.profile_data_arr.length > 0) {      
       var current_profile_id = "";
       var p_url = myAppPopup.profile_data_arr[0].linkedinUrl;
-      var p_id = p_url.replace('https://www.linkedin.com/in/', '').replace('/', '');      
+      var p_id = p_url.replace('https://www.linkedin.com/in/', '');    
+      p_id = p_id.replace('https://www.linkedin.com/sales/people/', '');
+      if (p_id.indexOf("?") != -1) {
+        p_id = p_id.split("?")[0];
+      }
+      if (p_id.indexOf("/") != -1) {
+        p_id = p_id.split("/")[0];
+      }
+      if (p_id.indexOf(",") != -1) {
+        p_id = p_id.split(",")[0];
+      }
       sendMessage({
         command  : 'getLeadEmail',
         p_id   : p_id,
@@ -246,14 +289,85 @@ goToList:function(){
     });
   });
 },
+addAllLeadToBuffer:function(profiles_arr){ 
+  var allProfilesPromiseArr = [];
+  var profiles_arr = myAppPopup.search_profiles_arr;
+  for (var pi1 = 0; pi1 < profiles_arr.length; pi1++) {
+   var current_profile = profiles_arr[pi1];
+   allProfilesPromiseArr.push(
+    new Promise(function (resolve, reject) {
+      setTimeout(function(time_res){
+        var current_profile = time_res.current_profile;
+        var pi1 = time_res.pi1;
+        myAppPopup.saveSingleAddLeadToBuffer(current_profile,pi1).then((add_res_obj) => {
+          if (add_res_obj && add_res_obj.response && add_res_obj.response.saved == true) {
+            $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').removeClass('text-warning');
+            $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').addClass('text-success');
+            $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').text(messagesObj.get('saved_text'));
+          } else {
+            $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').removeClass('text-warning');
+            $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').addClass('text-danger');
+            $(".profile-item[data-index="+add_res_obj.p_index+"]").find('.profiles-status').text(messagesObj.get('error_text'));
+          }
+          resolve(add_res_obj.response);
+        });
+      },(1000 * (pi1 + 1)),{current_profile,pi1});
+    })
+    );
+ }
+ Promise.all(allProfilesPromiseArr).then((doneProfilesPromiseArr) => {
+  var total_saved_count = 0;
+  for (var i2 = 0; i2 < doneProfilesPromiseArr.length; i2++) {      
+    if (doneProfilesPromiseArr[i2] && doneProfilesPromiseArr[i2].saved == true) {
+      total_saved_count = total_saved_count + 1;
+    }
+  }
+  console.log('allProfilesPromiseArr >> ', allProfilesPromiseArr);
+  console.log('allProfilesPromiseArr >> ', total_saved_count);
+  setTimeout(function(){
+    myAppPopup.renderPopup('lead_saved', total_saved_count);
+    $("#add-all-lead-btn").prop('disabled',false);
+  },500);
+});
+},
+saveSingleAddLeadToBuffer : function(current_profile_obj,p_index){
+  return new Promise(function (resolve, reject) {    
+   var p_url = current_profile_obj.linkedinUrl;
+   var p_id = p_url.replace('https://www.linkedin.com/in/', '');    
+   p_id = p_id.replace('https://www.linkedin.com/sales/people/', '');
+   if (p_id.indexOf("?") != -1) {
+    p_id = p_id.split("?")[0];
+  }
+  if (p_id.indexOf("/") != -1) {
+    p_id = p_id.split("/")[0];
+  }
+  if (p_id.indexOf(",") != -1) {
+    p_id = p_id.split(",")[0];
+  }
+  sendMessage({
+    command  : 'addLeadToBuffer',
+    p_id   : p_id,
+  }, function(response) {      
+    resolve({response,p_index})
+  });
+});
+},
 addLeadToBuffer:function(){ 
   return new Promise(function (resolve, reject) {
-    var LinkedinUrl, elog;
-    var leads = [];
     if (myAppPopup.profile_data_arr && myAppPopup.profile_data_arr.length > 0) {    
       var current_profile_id = "";
       var p_url = myAppPopup.profile_data_arr[0].linkedinUrl;
-      var p_id = p_url.replace('https://www.linkedin.com/in/', '').replace('/', '');      
+      var p_id = p_url.replace('https://www.linkedin.com/in/', '');    
+      p_id = p_id.replace('https://www.linkedin.com/sales/people/', '');
+      if (p_id.indexOf("?") != -1) {
+        p_id = p_id.split("?")[0];
+      }
+      if (p_id.indexOf("/") != -1) {
+        p_id = p_id.split("/")[0];
+      }
+      if (p_id.indexOf(",") != -1) {
+        p_id = p_id.split(",")[0];
+      }
       sendMessage({
         command  : 'addLeadToBuffer',
         p_id   : p_id,
@@ -276,7 +390,17 @@ getProfilePreviewData:function(account,search_type){
       }
     });    
   });
-
+},
+getSearchProfileData:function(search_type){
+  return new Promise(function (resolve, reject) {
+    sendMessageActiveTab({"command": 'getSearchProfileData','search_type' : search_type}, function(p_data) {
+      if (p_data) {
+        resolve(p_data);
+      } else {
+        reject();
+      }
+    });    
+  });
 },
 renderPopup:function(viewId,profile_data,account){
   $('.popup-body .row').hide();
@@ -295,12 +419,12 @@ renderPopup:function(viewId,profile_data,account){
       $currentView.find('p.title').hide();
     }
     if (profile_data.company) {
-      $currentView.find('p.company').text(profile_data.company);
+      $currentView.find('.company-txt').text(profile_data.company);
     } else {
-      $currentView.find('p.company').hide();
+      $currentView.find('.company').hide();
     }
     if (profile_data.location) {
-      $currentView.find('p.location').text(profile_data.location);
+      $currentView.find('.location-txt').text(profile_data.location);
     } else {
       $currentView.find('p.location').hide();
     }
@@ -338,7 +462,54 @@ renderPopup:function(viewId,profile_data,account){
       } else {
         $currentView.find('.list-item-area').html('<div class="form-group"> <input type="text" class="form-control" name="list_name" id="list_name" placeholder="+ '+messagesObj.get('created_list')+'"> <span class="help-block"> </span> </div>');
       }*/
-    } else if (viewId == 'get_email_status') {
+    } else if (viewId == 'add_all_profile_list_seaction') {
+      var profiles_arr = profile_data;
+      $currentView.find("#profiles-list").html("");
+      var profiles_list_html = "";
+      for (var pi = 0; pi < profiles_arr.length; pi++) {
+        var fullName = profiles_arr[pi]['fullName'];
+        var imgUrl = profiles_arr[pi]['imgUrl'];
+        var location_str = profiles_arr[pi]['location'];
+        var title = profiles_arr[pi]['title'];
+        var company = profiles_arr[pi]['company'];
+        var status = messagesObj.get('saving_text');
+        if (fullName && fullName != "") {
+          profiles_list_html += '<div class="row profile-item" data-index="'+ pi +'">'+
+          '<div class="col-xs-2">'+
+          '<img class="imgUrl" src="'+ imgUrl +'">'+
+          '</div>'+
+          '<div class="col-xs-6">'+
+          '<div class="">'+
+          '<p class="name">' + fullName +'</p>'+
+          '<p class="title">' + title +'</p>'+
+          '<p>'+
+          '<i class="fa fa-map-marker"></i>'+ location_str + 
+          '</p>'+
+          '<p>'+
+          '<i class="fa fa-building"></i> '+ company +
+          '</p>'+
+          '</div>'+
+          '<div class="email-info">'+
+          '<p class="email-found text-success"> </p>'+
+          '<p class="email-not-found text-danger"> <span>  </span></p>'+
+          '</div>'+
+          '<div class="go-to-list-info">'+
+          '<p class="list-not-found text-danger" style="display: none;"> <span>  </span></p>'+
+          '</div>'+
+          '</div>'+
+          '<div class="col-xs-4">'+
+          '<button class="btn btn-info btn-block btn-blue add-single-lead-btn">'+
+          '<i class="fa fa-user-plus"></i> Add'+ '</button>'+
+          '<span class="profiles-status"> </span>' +
+          '</div>'+
+          '</div>'+
+          '</div>';  
+        }
+      }
+      $currentView.find("#profiles-list").html(profiles_list_html);      
+      $currentView.find("#profiles-list").show();
+    }    
+    else if (viewId == 'get_email_status') {
       viewId = "profile_data";
       $currentView = $('.popup-body #'+viewId);
       $currentView.show();
@@ -352,12 +523,12 @@ renderPopup:function(viewId,profile_data,account){
         $currentView.find('.email-info p.email-found span').text('');
       }
     } else if (viewId == 'lead_saved') {
-
-      if (profile_data) {
+      var total_saved_count = profile_data;
+      $currentView.find('#leads_saved_text').text( total_saved_count +" "+ messagesObj.get('leads_saved'));
+      /*if (profile_data) {
         $currentView.find('a.list_url').attr('href',profile_data.list_url);
         $currentView.find('span.listName').text(profile_data.listName);
-      }
-
+      }*/
     } else if (viewId == 'go_to_list') {
       viewId = "profile_data";
       $currentView = $('.popup-body #'+viewId);

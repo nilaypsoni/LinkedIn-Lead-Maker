@@ -1,0 +1,149 @@
+body {
+	width: 450px;
+	margin: 0;
+	height: 450px;
+	background-color: #efefef;
+}
+
+.popup-header {	
+	padding: 12px 0;
+	background: #03a9f5;
+	height: 46px;
+	margin-bottom: 24px;
+}
+
+.popup-header > h3 {	
+	font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0px;
+    padding: 4px 10px 10px;
+    text-align: left;
+}
+.btn-blue {
+	background: #03a9f5;
+}
+.btn-blue:hover {
+	background: #03a9f5;
+}
+.popup-body{
+	background: #ffffff;
+	box-shadow: 0px 0px 3px 1px #dfdfdf;
+	padding: 12px;	
+}
+.popup-body .css-loader {
+	width: 100%;
+	height: 36px;
+	text-align: center;
+	margin: 30% 0;
+}
+
+
+.popup-body .css-loading-style {
+	font-size: 46px;
+	color: #a7a7a7;
+	margin: -22px auto;
+	animation:
+	-webkit-animation: flickerAnimation 1s infinite;
+	-moz-animation: flickerAnimation 1s infinite;
+	-o-animation: flickerAnimation 1s infinite;
+	animation: flickerAnimation 1s infinite;
+}
+
+.popup-body .info {
+	margin-top: 29%;
+	text-align: center;
+	font-size: 14px;
+	color: #595959;
+	font-weight: 300;
+}
+
+.popup-footer {
+	position: fixed;
+	min-height: 39px;
+	background: #ffffff;
+	bottom: 0;
+	width: 102%;
+	box-shadow: 0px 0px 3px 1px #dfdfdf;
+}
+
+.popup-footer t {
+	color: #cccccc;
+	padding: 0 4px;
+}
+
+.popup-footer a {
+	outline: 0;
+	padding: 12px 0;    
+	font-weight: 300;
+	cursor: pointer;
+	text-decoration: none;
+}
+.popup-footer a.text-info:hover {
+	text-decoration: underline;
+}
+.popup-footer p {
+	display: none;
+	color: #595959;    
+	font-weight: 300;
+	padding: 0px 22px;
+}
+
+#profile_data .imgUrl{
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	background: #c5c5c5;
+	margin-top: 2px;
+	border-width: 200px;
+	box-shadow: 0px 0px 4px #404040;
+}
+
+#profile_data p.name {
+	font-weight: bold;
+	font-size: 16px;
+}
+#profile_data .email-info a {
+	text-align: left;    
+	font-size: 14px;
+	font-weight: bold;
+}
+#profile_data .email-info p{
+	display: none;
+}
+#profile_data p {
+	font-size: 12px;
+	line-height: 14px;
+	font-weight: 300;
+}
+
+@keyframes flickerAnimation {
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+@-o-keyframes flickerAnimation{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+@-moz-keyframes flickerAnimation{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+@-webkit-keyframes flickerAnimation{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+}
+::-webkit-scrollbar-track-piece {
+	background: #eee
+}
+::-webkit-scrollbar-thumb {
+	background: #ccc
+}

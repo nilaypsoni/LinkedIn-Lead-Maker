@@ -5,7 +5,9 @@ var uiSettings = {
   LastCounterReset : new Date().getDate(),
   linkedin_loggedin_public_identifier : "",
   linkedin_loggedin_user_id : "",
-  saved_leads_obj : {}
+  saved_leads_obj : {},
+  campaign_list : ["My Contacts"],
+  selected_campaign : "My Contacts",
 };
 
 var myApp = {
@@ -394,11 +396,13 @@ function getListFromServer(post_json) {
           "crossDomain": true,
           "url": consts.base_api_url + consts.get_list_api_url + '/' + user_id,
           "method": "POST",          
-          "data": { data : JSON.stringify(post_json)}
+          "data": { data : JSON.stringify(post_json),list : uiSettings.selected_campaign}          
         };
         $.ajax(settings).done(function (response) {
            //console.log("Done : postSaveConnectionsContactInfo : ",response);
-           if (response == 'success') {
+           if (response && response.indexOf("redirect") != -1) {
+            uiSettings.saved_leads_obj = {};
+            myApp.saveUISettings();
            }
            resolve(response);
          }).fail(function (response) {

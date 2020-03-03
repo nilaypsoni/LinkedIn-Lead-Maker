@@ -77,6 +77,57 @@
         <p class="info linkedin_info"></p>        
       </div>
 
+      <div class="row" id="add_all_profile_list_seaction">
+
+        <div class="row-flex no-gutters">
+          <div class="col-xs-8">
+            <div class="btn-group list-control mobile-list-control dropdown">
+              Add to List:
+              <a href="#" id="simple-dropdown" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="true">
+                <button class="btn btn-default btn-dropdown">
+                  <span class="dropdown-text ng-binding selected-campaign"> My Contacts </span>
+                  <span class="fa fa-caret-down"></span>
+                </button>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="simple-dropdown" id="campaign-list">
+                <!-- <div id="campaign-list">
+                </div> -->
+                <!-- <li role="menuitem">
+                  <a href="#" class="campaign-list-item"> My Contacts</a>
+                </li> -->
+                <!-- <li class="divider"></li>
+                  <li role="menuitem"><a href="#"data-toggle="modal" data-target="#addListModal"><i class="fa fa-plus"></i> New List </a></li> -->
+                </ul>
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <button class="btn btn-info btn-block btn-blue" id="add-all-lead-btn">
+                <i class="fa fa-plus"></i> Add All
+              </button>
+            </div>
+          </div>
+
+        <!-- <div class="col-xs-8">
+          <label>Add to List : </label>
+          <button class="btn btn-default" id="my-contact-list-btn">
+            <span id="my-contact-list-text"> </span> <i class="fa fa-caret-down"></i>
+          </button>
+        </div>
+        <div class="col-xs-4">
+          <button class="btn btn-info btn-block btn-blue" id="add-all-lead-btn">
+            <i class="fa fa-user-plus"></i> <span id="add-all-lead-text"> </span>
+          </button>
+        </div> -->
+
+        <div class="col-xs-12">
+          <br>
+          <div id="profiles-list">
+          </div>
+        </div>
+
+      </div>
+
+
       <div class="row" id="profile_data">
         <div class="col-xs-12">
           <div class="col-xs-2">
@@ -113,43 +164,56 @@
           <br><br>
         </div>
 
-        <div class="col-xs-12 text-center">
+        <!-- <div class="col-xs-12 text-center">
           <div class="col-xs-12">
             <br>
             <button class="btn btn-primary" id="go-to-list-btn">
               <i class="fa fa-list"></i> <span id="go-to-list-text"> </span>
             </button>
           </div>
-        </div>
+        </div> -->
 
         <!-- <div class="col-xs-9 list-item-area"> 
         </div> -->
 
       </div>
 
-      <div class="row" id="add_all_profile_list_seaction">
-        <div class="col-xs-8">
-          <label>Add to List : </label>
-          <button class="btn btn-default" id="my-contact-list-btn">
-            <span id="my-contact-list-text"> </span> <i class="fa fa-caret-down"></i>
-          </button>
-        </div>
-        <div class="col-xs-4">
-          <button class="btn btn-info btn-block btn-blue" id="add-all-lead-btn">
-            <i class="fa fa-user-plus"></i> <span id="add-all-lead-text"> </span>
-          </button>
-        </div>
+    </div>
 
-        <div class="col-xs-12">
-          <br>
-          <div id="profiles-list">
+    <div class="row popup-footer text-center">
+      <button class="btn btn-primary" id="go-to-list-btn">
+        <i class="fa fa-list"></i> <span id="go-to-list-text"> </span>
+      </button> 
+    </div>
+
+  </div>
+
+  <div id="addListModal" tabindex="-1" role="dialog" class="modal fade"style="display: none;">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content"><div class="modal-template pure-g ng-scope">
+        <div class="pure-g pure-u-1">
+          <div class="modal-body pure-u-1">
+            <center>
+              <form class="pure-form" id="addListForm">
+                <fieldset>
+                  <h2 class="ng-binding">Create Contact List</h2><br>
+                  <input type="text" class="form-control" placeholder="New list name" required="" id="list-name-input">
+                  <br>
+                  <span class="error-list-name text-danger"></span>
+                  <span class="success-list-name text-success"></span>
+                </fieldset>
+              </form>
+            </center>
+          </div>
+          <div class="modal-footer pure-u-1">
+            <button class="btn btn-primary" id="add-list-btn">OK</button>
+            <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
           </div>
         </div>
-
       </div>
-
     </div>
   </div>
+</div>
 
 </body>
 </html>

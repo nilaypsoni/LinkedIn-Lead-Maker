@@ -225,7 +225,7 @@ var myContentPage = {
               });
             });
 
-          } if (myContentPage.search_type == "SN") {
+          } else if (myContentPage.search_type == "SN") {
 
             $profile_selector = $('.search-results__result-item');
             $profile_selector.each(function(){
@@ -290,7 +290,55 @@ var myContentPage = {
                 });
               });
 
+          } else if (myContentPage.search_type == "FC") {
+            var $profile_selector = $('.mn-connections .mn-connection-card');
+            $profile_selector.each(function() {
+              var url, title, imgUrl, name, oname, fname, lname,location_text,company,account = "Regular";
+              url = $(this).find('a.mn-connection-card__link').attr('href') || '';
+              imgUrl = $(this).find('img.presence-entity__image').attr('src');
+              name = $(this).find('.mn-connection-card__name').text().trim() || '';
+              title = $(this).find('.mn-connection-card__occupation').text().trim();
+              location_text = "";
+              oname = name.split(' ');
+              fname = oname[0];
+              oname.shift();
+              lname = oname.join(' ');
+              var title_2 = "";
+              var title_3 = "";
+              var company = "";
+              if (title.indexOf(" at ") != -1) {
+                company = title.split(" at ")[1].trim();
+              } else if (title_2.indexOf(" at ") != -1) {
+                company = title_2.split(" at ")[1];
+              } else if (title.indexOf(" At ") != -1) {
+                company = title.split(" At ")[1].trim();
+              } else if (title_2.indexOf(" At ") != -1) {
+                company = title_2.split(" At ")[1];
+              } else if (title_3.indexOf(" at ") != -1) {
+                company = title_3.split(" at ")[1].trim();
+              } else if (title_3.indexOf(" At ") != -1) {
+                company = title_3.split(" At ")[1];
+              }               
+              if(imgUrl && imgUrl.indexOf('static') > -1) imgUrl = null;
+
+              results.push({
+                firstName   : fname,
+                lastName    : lname,
+                fullName    : name,
+                title    : title,
+                location    : location_text,
+                linkedinUrl : "https://www.linkedin.com"+url,
+                account : account,
+                company : company,
+                email: '',
+                domain: '',
+                imgUrl      : imgUrl || '',
+                searchDivID      : $(this).attr('id')
+              });
+            });
+
           }
+
           resolve({results:results});
         });
 },
